@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Cuestionario teórico: Electrocardiograma</title>
+<style>
+:root{--bg:#f6f8fa;--card:#fff;--tx:#14202b;--mut:#5b6b7a;--bd:#d8e0e7;--ac:#0b7a75;--acs:#d9f2f0;--ok:#1a7f4b;--oks:#dcf5e7;--ko:#b3261e;--kos:#fde4e2;
+box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#0f1a22;--card:#17252f;--tx:#e6eef4;--mut:#9fb0be;--bd:#2b3d4a;--ac:#4fd1c5;--acs:#16403e;--ok:#5fd39a;--oks:#14382a;--ko:#ff8a80;--kos:#4a1f1c}}
+:root[data-theme="dark"]{--bg:#0f1a22;--card:#17252f;--tx:#e6eef4;--mut:#9fb0be;--bd:#2b3d4a;--ac:#4fd1c5;--acs:#16403e;--ok:#5fd39a;--oks:#14382a;--ko:#ff8a80;--kos:#4a1f1c}
+html{scroll-padding-top:env(safe-area-inset-top,0px)}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--tx);font:16px/1.5 system-ui,-apple-system,"Segoe UI",Roboto,sans-serif}
+main{max-width:720px;margin:0 auto;padding:20px 16px 40px}
+h1{font-size:1.4rem;margin:0 0 4px}
+.sub{color:var(--mut);margin:0 0 18px;font-size:.95rem}
+.card{background:var(--card);border:1px solid var(--bd);border-radius:14px;padding:20px}
+.bar{height:8px;background:var(--bd);border-radius:6px;overflow:hidden;margin:0 0 6px}
+.bar i{display:block;height:100%;background:var(--ac);width:0;transition:width .3s}
+.meta{display:flex;justify-content:space-between;color:var(--mut);font-size:.85rem;margin-bottom:14px}
+.tag{display:inline-block;font-size:.75rem;padding:2px 10px;border-radius:99px;background:var(--acs);color:var(--ac);font-weight:600;margin-bottom:10px}
+.q{font-size:1.1rem;font-weight:600;margin:0 0 14px}
+.opt{display:block;width:100%;text-align:left;background:var(--card);color:var(--tx);border:1.5px solid var(--bd);border-radius:10px;padding:12px 14px;margin:0 0 10px;font:inherit;cursor:pointer}
+.opt:hover:not(:disabled){border-color:var(--ac)}
+.opt:disabled{cursor:default}
+.opt.ok{border-color:var(--ok);background:var(--oks)}
+.opt.ko{border-color:var(--ko);background:var(--kos)}
+.fb{margin-top:14px;padding:12px 14px;border-radius:10px;background:var(--acs);font-size:.95rem}
+.fb b.ok{color:var(--ok)}.fb b.ko{color:var(--ko)}
+.btn{background:var(--ac);color:var(--bg);border:0;border-radius:10px;padding:11px 20px;font:inherit;font-weight:600;cursor:pointer;margin-top:14px}
+.btn.alt{background:transparent;color:var(--ac);border:1.5px solid var(--ac);margin-left:8px}
+.score{font-size:2.6rem;font-weight:700;color:var(--ac);margin:4px 0}
+.row{display:flex;justify-content:space-between;gap:10px;padding:8px 0;border-bottom:1px solid var(--bd);font-size:.95rem}
+.hint{color:var(--mut);font-size:.85rem;margin-top:12px}
+</style>
+</head>
+<body>
+<main>
+<h1>🫀 Electrocardiograma</h1>
+<p class="sub">Instrumentación hospitalaria · Capítulo 6 · Enfoque teórico-práctico (sin cálculos)</p>
+<div class="card" id="app"></div>
+</main>
+<script>
+// c = índice de la respuesta correcta (0-3). t = tema. s = origen (Módulo / Complemento)
+const Q=[
+{t:"Introducción",q:"¿Qué aporta el ECG frente a otros métodos de diagnóstico, según el módulo?",o:["Reemplaza por completo los demás exámenes médicos","Información básica y precisa que no se obtiene por otros métodos, reduciendo el error humano","Solo sirve para medir la presión arterial","Únicamente se usa para vigilar la actividad física"],c:1,e:"El ECG se usa como apoyo a otros exámenes, revisiones o chequeos de salud; no los reemplaza."},
+{t:"Fisiología básica",q:"Durante el ejercicio, ¿qué le sucede a la frecuencia cardíaca y por qué?",o:["Disminuye para ahorrar energía","Se acelera para llevar más oxígeno a los músculos","No cambia nunca","Se vuelve irregular obligatoriamente"],c:1,e:"En reposo la frecuencia normal de un adulto está entre 60 y 100 latidos por minuto; con ejercicio aumenta para aportar más oxígeno."},
+{t:"Sistema de conducción",q:"¿Cuál es el orden correcto en que viaja la señal eléctrica en cada latido?",o:["Nodo AV → nodo SA → ventrículos → aurículas","Ventrículos → nodo AV → aurículas → nodo SA","Nodo SA → aurículas → nodo AV → ventrículos","Aurículas → ventrículos → nodo SA → nodo AV"],c:2,e:"La señal nace en el nodo SA (aurícula derecha), recorre las aurículas, pasa al nodo AV y recorre las paredes ventriculares; luego los ventrículos se relajan y el ciclo reinicia."},
+{t:"Sistema de conducción",q:"¿Cuál es el papel del nodo auriculoventricular (AV)?",o:["Es el marcapasos principal que inicia el latido","Almacena la sangre antes de bombearla","Mide la presión arterial del paciente","Recibe la señal entre aurículas y ventrículos y envía otra señal que activa la contracción ventricular"],c:3,e:"El nodo AV se ubica entre aurículas y ventrículos. Su señal recorre los ventrículos y provoca la contracción que bombea la sangre fuera del corazón."},
+{t:"Presión arterial",q:"¿Qué representa la presión sistólica?",o:["La presión más baja, cuando el corazón se llena de sangre","La presión más alta en las arterias, cuando los ventrículos bombean sangre hacia afuera","La presión venosa media","La presión de los pulmones"],c:1,e:"La diastólica es la presión entre latidos, con el corazón llenándose, y es la más baja. Una presión saludable en adultos suele ser menor que 120/80."},
+{t:"¿Qué es un ECG?",q:"¿Cuál es la diferencia entre electrocardiograma (ECG o EKG) y electrocardiógrafo?",o:["Son exactamente lo mismo","El ECG es el sistema de medición y registro gráfico del ritmo cardíaco, y el electrocardiógrafo es el aparato que muestra esas gráficas","El electrocardiógrafo es el electrodo y el ECG es el cable","El ECG es el médico que interpreta el examen"],c:1,e:"El ECG mide y muestra gráficamente (con monitoreo constante) la actividad del corazón; el aparato que presenta las gráficas se llama electrocardiógrafo."},
+{t:"Usos clínicos",q:"¿Cuál de las siguientes NO es una aplicación del ECG?",o:["Detectar latidos cardíacos irregulares","Vigilar la insuficiencia cardíaca","Apoyar el diagnóstico de un ataque al corazón en urgencias","Medir el nivel de glucosa en la sangre"],c:3,e:"El ECG se usa en salas de emergencia, ambulancias y hospitales para detectar o vigilar enfermedades del corazón (arritmias, obstrucción de arterias, daño cardíaco, insuficiencia cardíaca). No mide glucosa."},
+{t:"Procedimiento",q:"¿En qué posición debe estar el paciente durante el ECG?",o:["De pie, con los brazos arriba","Sentado, caminando lentamente","Acostado en la camilla en decúbito supino, cerca del electrocardiógrafo","Boca abajo, con la camilla inclinada"],c:2,e:"Además, el paciente se retira la ropa de la cintura hacia arriba para colocar bien los electrodos."},
+{t:"Procedimiento",q:"¿Por qué se limpian y desinfectan los electrodos antes y después del ECG?",o:["Solo por una norma administrativa","Para cambiar el color de las señales","Para mejorar la obtención de la señal (y mantener la higiene entre pacientes)","Para que el paciente no sienta frío"],c:2,e:"Un electrodo limpio y bien ubicado mejora la calidad del registro. Para la mejor señal posible hay que ser estrictos con la colocación exacta."},
+{t:"Procedimiento (caso práctico)",q:"Durante el registro, la señal aparece con mucho ruido. El paciente está hablando, moviéndose y lleva el celular en el bolsillo. ¿Qué corresponde hacer?",o:["Pedirle que no se mueva ni hable, que respire normalmente, y retirar celular y relojes","Subir el brillo de la pantalla del equipo","Cambiar el diagnóstico a arritmia","Continuar; el ruido no afecta la señal"],c:0,e:"Los aparatos electrónicos pueden interferir con la señal y el movimiento o el habla alteran el registro. El paciente debe permanecer quieto, sin hablar y respirando normal."},
+{t:"Lectura del ECG",q:"¿Cómo se define un segmento en el trazado?",o:["Una deflexión positiva o negativa","Un conjunto de ondas y complejos repetidos","Una línea isoeléctrica (ni positiva ni negativa) entre dos ondas","El tiempo total de un latido"],c:2,e:"Onda: deflexión positiva o negativa. Segmento: línea isoeléctrica entre ondas. Intervalo: combina una onda y un segmento."},
+{t:"Ondas del ECG",q:"¿Para qué es especialmente útil el complejo QRS?",o:["Medir la temperatura del paciente","Diagnosticar bloqueos de rama y crecimientos ventriculares, entre otras cosas","Conocer el nivel de oxígeno en sangre","Identificar el tipo de electrodo usado"],c:1,e:"El complejo QRS representa la despolarización ventricular. La Q es la primera onda negativa, la R la primera positiva y la S la negativa posterior a la R. La onda T representa la repolarización ventricular."},
+{t:"Ondas del ECG",q:"Sobre la onda P (despolarización auricular), ¿cuál afirmación es correcta?",o:["Siempre es negativa","Por lo general es positiva, pero en derivaciones como aVR o V1 puede ser negativa o bifásica","Solo aparece en las derivaciones precordiales","Representa la repolarización ventricular"],c:1,e:"La polaridad de una onda depende de la derivación (del «ángulo» desde el que se observa el corazón)."},
+{t:"Electrodos",q:"¿Cuántas terminales tiene el cable de un electrocardiógrafo de 12 derivaciones, y cómo se clasifican?",o:["2 terminales: positiva y negativa","10 terminales: electrodos periféricos (extremidades) y precordiales (tórax), con una neutra","12 terminales, una por derivación","6 terminales, todas en el tórax"],c:1,e:"Los 10 electrodos (4 en extremidades y 6 precordiales) producen las 12 derivaciones. La terminal N (neutra) es un conductor con potencial cero."},
+{t:"Electrodos",q:"¿Dónde se coloca el electrodo periférico del brazo derecho (RA / R)?",o:["En la muñeca derecha","Por encima del tobillo izquierdo","En la muñeca izquierda","En el tórax, 4.º espacio intercostal"],c:0,e:"RA: muñeca derecha. LA: muñeca izquierda. LL: por encima del tobillo izquierdo. RL (neutro): por encima del tobillo derecho."},
+{t:"Electrodos",q:"¿Dónde va el electrodo precordial V4?",o:["4.º espacio intercostal derecho, junto al esternón","Entre V2 y V3","5.º espacio intercostal en la línea clavicular media","5.º espacio intercostal en la línea axilar media"],c:2,e:"V3 queda entre V2 y V4; V5 en el 5.º espacio izquierdo en la línea axilar anterior; V6 en el 5.º espacio izquierdo en la línea axilar media."},
+{t:"Derivaciones",q:"El módulo compara un ECG con una colección de 12 «fotografías» de la actividad eléctrica del corazón. ¿Qué significa eso?",o:["Cada derivación es una imagen estática del corazón","Cada derivación observa la actividad eléctrica desde un ángulo distinto","Cada derivación mide una enfermedad diferente","Solo 2 de las 12 derivaciones son útiles"],c:1,e:"Si la electricidad se acerca al electrodo (la «cámara») se registra un pico positivo; si se aleja, uno negativo; y si es perpendicular, la deflexión es isodifásica (positiva y negativa)."},
+{t:"Derivaciones",q:"¿Cómo se clasifican las 12 derivaciones estándar?",o:["6 de los miembros (plano frontal) y 6 precordiales (plano transversal)","4 de los miembros y 8 precordiales","Todas en el plano frontal","Solo 3 bipolares y 9 monopolares"],c:0,e:"Miembros: I, II, III, aVR, aVL, aVF. Precordiales: V1 a V6. I, II y III son bipolares: hay que saber cuál es el polo positivo y cuál el negativo para leerlas bien."},
+{t:"Derivaciones",q:"¿Qué significan las letras de aVR, aVL y aVF?",o:["Voltaje alto, voltaje bajo y voltaje fijo","Derecha (right) desde el brazo derecho, izquierda (left) desde el brazo izquierdo y pie (foot)","Aurícula, ventrículo y válvula","Anterior, lateral y frontal"],c:1,e:"aVR se observa desde el electrodo del brazo derecho, aVL desde el brazo izquierdo y aVF desde el pie."},
+{t:"Frecuencia",q:"¿Por qué es importante analizar la frecuencia en un ECG?",o:["Solo para decorar el reporte","Porque permite determinar distintas patologías y su gravedad, comparándola con el valor de referencia","Porque indica el color de los electrodos","Porque reemplaza el análisis de las ondas"],c:1,e:"Normalmente la frecuencia la entrega el análisis automático del equipo; si el ECG no la muestra, se puede estimar manualmente."},
+{t:"Frecuencia",q:"Si el ECG no muestra la frecuencia cardíaca, ¿cómo se elige el método manual según el ritmo?",o:["Ritmo regular: se usa el intervalo R-R. Ritmo irregular (como en arritmias): se cuentan los complejos QRS en un tramo de tiempo conocido","Ritmo regular: se cuentan las ondas P. Ritmo irregular: se mide la onda T","Siempre se usa el intervalo R-R","Siempre se cuenta con un cronómetro sin mirar el trazado"],c:0,e:"El método del intervalo R-R asume un ritmo regular. Si es irregular, se cuentan los QRS en la tira, que suele registrar 10 segundos, y se escala a un minuto."}
+];
+
+const app=document.getElementById('app');
+let order,i,ans,locked;
+const sh=a=>{a=a.slice();for(let k=a.length-1;k>0;k--){const j=Math.floor(Math.random()*(k+1));[a[k],a[j]]=[a[j],a[k]]}return a};
+function start(only){
+  const base=only||Q.map((_,k)=>k);
+  order=sh(base).map(k=>({k,opts:sh([0,1,2,3])}));
+  i=0;ans=[];locked=false;show();
+}
+function show(){
+  const it=order[i],d=Q[it.k];
+  app.innerHTML=`<div class="bar"><i style="width:${i/order.length*100}%"></i></div>
+  <div class="meta"><span>Pregunta ${i+1} de ${order.length}</span><span>Capítulo 6</span></div>
+  <span class="tag">${d.t}</span><p class="q">${d.q}</p>
+  <div id="opts">${it.opts.map((oi,p)=>`<button class="opt" data-p="${p}">${'ABCD'[p]}. ${d.o[oi]}</button>`).join('')}</div>
+  <div id="out"></div>`;
+  locked=false;
+  app.querySelectorAll('.opt').forEach(b=>b.onclick=()=>pick(+b.dataset.p));
+}
+function pick(p){
+  if(locked)return;locked=true;
+  const it=order[i],d=Q[it.k],right=it.opts[p]===d.c;
+  ans.push({k:it.k,right});
+  app.querySelectorAll('.opt').forEach((b,q)=>{b.disabled=true;
+    if(it.opts[q]===d.c)b.classList.add('ok');else if(q===p)b.classList.add('ko')});
+  const last=i===order.length-1;
+  document.getElementById('out').innerHTML=`<div class="fb"><b class="${right?'ok':'ko'}">${right?'✔ Correcto.':'✘ Incorrecto.'}</b> ${d.e}</div>
+  <button class="btn" id="nx">${last?'Ver resultados':'Siguiente →'}</button>`;
+  document.getElementById('nx').onclick=()=>{last?end():(i++,show())};
+}
+function end(){
+  const ok=ans.filter(a=>a.right).length,n=ans.length,pct=Math.round(ok/n*100);
+  const by={};ans.forEach(a=>{const t=Q[a.k].t;by[t]=by[t]||[0,0];by[t][1]++;if(a.right)by[t][0]++});
+  const wrong=ans.filter(a=>!a.right).map(a=>a.k);
+  const msg=pct>=85?'Excelente dominio del tema.':pct>=60?'Buen avance; repasa los temas con menor puntaje.':'Conviene repasar el capítulo y volver a intentarlo.';
+  app.innerHTML=`<div class="bar"><i style="width:100%"></i></div>
+  <p class="meta">Resultados</p><div class="score">${ok} / ${n} (${pct}%)</div><p>${msg}</p>
+  ${Object.entries(by).map(([t,v])=>`<div class="row"><span>${t}</span><b>${v[0]}/${v[1]}</b></div>`).join('')}
+  <button class="btn" id="again">Reintentar todo</button>${wrong.length?`<button class="btn alt" id="rev">Repetir solo las falladas (${wrong.length})</button>`:''}
+  <p class="hint">Todas las preguntas salen del contenido del capítulo 6 del módulo.</p>`;
+  document.getElementById('again').onclick=()=>start();
+  const r=document.getElementById('rev');if(r)r.onclick=()=>start(wrong);
+}
+start();
+</script>
+</body>
+</html>
